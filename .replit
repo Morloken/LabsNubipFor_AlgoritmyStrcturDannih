@@ -1,6 +1,24 @@
-run = "Start"
+run = "g++ -o Labs/lab1 Labs/lab1.c -lm && ./Labs/lab1 && rm Labs/lab1"
+
 [nix]
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "Start"]
+run = [
+  "sh",
+  "-c",
+  "g++ -o Labs/lab1 Labs/lab1.c -lm && ./Labs/lab1 && rm Labs/lab1",
+]
+
+# ----------------for running all files simmutaniosly-------------
+# run = "for file in Labs/*.c; do g++ -o ${file%.*} $file -lm && ./${file%.*}; done"
+
+# [nix]
+# channel = "stable-24_05"
+
+# [deployment]
+# run = [
+#   "sh",
+#   "-c",
+#   "for file in Labs/*.c; do g++ -o ${file%.*} $file -lm && ./${file%.*}; done",
+# ]
