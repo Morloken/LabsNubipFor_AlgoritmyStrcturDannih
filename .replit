@@ -1,4 +1,4 @@
-run = "g++ -o Labs/lab1 Labs/lab1.c -lm && ./Labs/lab1 && rm Labs/lab1"
+run = "g++ -o Labs/lab2 Labs/lab2.c -lm && ./Labs/lab2 && rm Labs/lab2"
 
 [nix]
 channel = "stable-24_05"
@@ -7,7 +7,7 @@ channel = "stable-24_05"
 run = [
   "sh",
   "-c",
-  "g++ -o Labs/lab1 Labs/lab1.c -lm && ./Labs/lab1 && rm Labs/lab1",
+  "g++ -o Labs/lab2 Labs/lab2.c -lm && ./Labs/lab2 && rm Labs/lab2",
 ]
 
 # ----------------for running all files simmutaniosly-------------
