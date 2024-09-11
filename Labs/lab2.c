@@ -25,11 +25,14 @@
 //     int n = 10; //Ammount of Teylor`s items
 
 //     double sin_x1 = taylor_sin(x + 1, n);
+//     // double sin_x1 = sin(x);
 //     double sin_x3 = taylor_sin(x + 3, n);
 
 //     double y = sin_x1 / (sin_x3 * sin_x3);
 
-//     cout << "Result: " << y << endl;
+//     cout << "Result(y): " << y << endl;
+//     cout << "Sin(x): " << sin(x) << endl;
+//     cout<< "Sum: "<< taylor_sin(x, n) << endl; 
 
 //     return 0;
 // }
@@ -64,6 +67,8 @@ int main() {
     double y = sin_x1 / (sin_x3 * sin_x3);
 
     cout << "Result: " << y << endl;
+    cout << "Sin(x): " << sin(x) << endl;
+    cout<< "Sum: "<< taylor_sin_recursive(x, n) << endl;
 
     return 0;
 }
