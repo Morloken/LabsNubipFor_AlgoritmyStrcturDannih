@@ -1,5 +1,5 @@
-//--------------------------------------------
-//proggram without reccursion
+// // --------------------------------------------
+// // proggram without reccursion
 
 // #include <iostream>
 // #include <cmath>
@@ -43,6 +43,9 @@
 using namespace std;
 
 double taylor_sin_recursive(double x, int n, int term = 1) {
+    if (n == 0) {
+        return 0;  
+    }
 
     double next_term = -x * x / (2 * term * (2 * term + 1));
     return x + next_term * taylor_sin_recursive(x, n - 1, term + 1);
