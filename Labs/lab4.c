@@ -43,18 +43,23 @@ int fibonacciSearch(int arr[], int size, int target, int &comparisons) {
     }
 
     // Вказуємо на видиму частину масиву
-    int offset = -1;
+    int offset = -1;//відстеження поточної області пошуку в масиві.
 
     while (fibM > 1) {
         // Перевіряємо чи валідна позиція
-        int i = min(offset + fib2, size - 1);// Якщо (offset + fib2) більше (size - 1), то використовуємо (size - 1), або ж (offset + fib2), якщо (offset + fib2) менше (size - 1)
+        int i = min(offset + fib2, size - 1);/* Якщо (offset + fib2) більше (size - 1), то використовуємо (size - 1), 
+        або ж (offset + fib2), якщо (offset + fib2) менше (size - 1)
+        */
+        /*
+        цикл продовжується, доки число Фібоначчі більше 1. У циклі вибирається індекс i для порівняння, який визначається як мінімум між offset + fib2 і останнім індексом масиву (size - 1). Це потрібно для уникнення виходу за межі масиву.
+        */
         comparisons++;
-        if (arr[i] < target) {
+        if (arr[i] < target) {// Якщо елемент масиву arr[i] менше target, то offset збільшується на значення fib1
             fibM = fib1;
             fib1 = fib2;
             fib2 = fibM - fib1;
             offset = i;
-        } else if (arr[i] > target) {
+        } else if (arr[i] > target) {// Якщо елемент масиву arr[i] більше target, то offset зменшується на значення fib2
             fibM = fib2;
             fib1 = fib1 - fib2;
             fib2 = fibM - fib1;
@@ -73,19 +78,27 @@ int fibonacciSearch(int arr[], int size, int target, int &comparisons) {
 }
 
 int main() {
-    const int N = 1000;
-    const int SEARCH_RANGE = 500;
-    int A[500], B[500];
+    const int N = 20;// Кількість елементів у масивах
+    const int SEARCH_RANGE = 15;// Діапазон пошуку
+    int A[SEARCH_RANGE], B[SEARCH_RANGE];
 
     // Заповнюємо масиви випадковими числами (для прикладу просто задамо вручну)
-    for (int i = 0; i < 500; ++i) {
+    for (int i = 0; i < SEARCH_RANGE; ++i) {
         A[i] = rand() % N;
-        B[i] = rand() % N;
+        cout<< "\nA[" << i << "] = " << A[i];
+       
     }
+    cout<< endl;
 
+    for (int i = 0; i < SEARCH_RANGE; ++i) {
+        B[i] = rand() % N;
+        cout<< "\nB[" << i << "] = " << B[i];
+
+    }
+     // B[i] = rand() % N;
     // Сортуємо масиви для застосування пошуку
-    sort(A, A + 500);// Функція sort() використовує алгоритм сортування бульбашкою для сортування масиву A
-    sort(B, B + 500);//сортування бульбашкою для масиву B
+    sort(A, A + SEARCH_RANGE);// Функція sort() використовує алгоритм сортування бульбашкою для сортування масиву A
+    sort(B, B + SEARCH_RANGE);//сортування бульбашкою для масиву B
 
     int binaryComparisons = 0;
     int fibonacciComparisons = 0;
@@ -104,6 +117,8 @@ int main() {
             cout << i << "\t";
         }
     }
+    // //вивід обох масивів a і в
+    // for( )
 
     cout <<"\n------------------" <<endl;
     cout << "Кількість порівнянь (бінарний пошук): " << binaryComparisons << endl;
