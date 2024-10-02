@@ -1,133 +1,199 @@
 #include <iostream>
 #include <vector>
-#include <algorithm> // Для std::swap
+#include <algorithm>
 #include <cstdlib>   // Для rand()
 #include <ctime>     // Для time()
-#define N 1000       
-// Константа для розміру масиву
-
+#include <iomanip>   // Для setw і форматування таблиці
 using namespace std;
 
 // Глобальні змінні для підрахунку кількості порівнянь та обмінів
-int comparisons = 0;  // Лічильник порівнянь
-int exchanges = 0;    // Лічильник обмінів
+int comparisons = 0;
+int exchanges = 0;
 
-// Функція для скидання лічильників порівнянь і обмінів
+// Скидаємо лічильники
 void resetCounters() {
     comparisons = 0;
     exchanges = 0;
 }
 
-// Функція для сортування бульбашкою (Bubble Sort)
-// Працює шляхом багаторазового обміну сусідніх елементів, якщо вони в неправильному порядку
+// Функція сортування бульбашкою
 void bubbleSort(vector<int>& arr) {
-    int n = arr.size();  // Отримуємо розмір масиву
-    for (int i = 0; i < n - 1; i++) {  // Зовнішній цикл: проходить по всьому масиву
-        for (int j = 0; j < n - i - 1; j++) {  // Внутрішній цикл: порівнює сусідні елементи
-            comparisons++;  // Кожне порівняння збільшує лічильник
-            if (arr[j] > arr[j + 1]) {  // Якщо елемент зліва більше за сусідній справа
-                swap(arr[j], arr[j + 1]);  // Міняємо їх місцями
-                exchanges++;  // Збільшуємо лічильник обмінів
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            comparisons++;
+            if (arr[j] > arr[j + 1]) {
+                swap(arr[j], arr[j + 1]);
+                exchanges++;
             }
         }
     }
 }
 
 // Функція швидкого сортування (QuickSort) за методом Хоара
-// Рекурсивно ділить масив на дві частини та сортує їх окремо
 void quickSort(vector<int>& arr, int low, int high) {
-    if (low < high) {  // Базовий випадок для рекурсії
-        comparisons++;  // Кожен раз, коли робимо порівняння для поділу
-        int pivot = arr[high];  // Вибираємо опорний елемент (останній елемент масиву)
-        int i = (low - 1);  // Індекс для меншого елемента
+    if (low < high) {
+        int pivot = arr[low];
+        int left = low;
+        int right = high;
 
-        // Цикл, що знаходить правильну позицію для опорного елемента
-        for (int j = low; j <= high - 1; j++) {
-            comparisons++;  // Порівняння поточного елемента з опорним
-            if (arr[j] < pivot) {  // Якщо поточний елемент менший за опорний
-                i++;  // Рухаємо індекс менших елементів
-                swap(arr[i], arr[j]);  // Обмінюємо елементи
-                exchanges++;  // Лічильник обмінів збільшується
+        while (left < right) {
+            while (arr[right] >= pivot && left < right) {
+                comparisons++;
+                right--;
+            }
+            if (left != right) {
+                arr[left] = arr[right];
+                exchanges++;
+                left++;
+            }
+            while (arr[left] <= pivot && left < right) {
+                comparisons++;
+                left++;
+            }
+            if (left != right) {
+                arr[right] = arr[left];
+                exchanges++;
+                right--;
             }
         }
-        swap(arr[i + 1], arr[high]);  // Обмін опорного елемента на правильну позицію
-        exchanges++;  // Лічильник обмінів збільшується
-        int pi = i + 1;  // Індекс, на який поміщений опорний елемент
+        arr[left] = pivot;
+        exchanges++;
 
-        // Рекурсивно сортуємо елементи до та після опорного
-        quickSort(arr, low, pi - 1);
-        quickSort(arr, pi + 1, high);
+        quickSort(arr, low, left - 1);
+        quickSort(arr, left + 1, high);
     }
 }
 
 // Функція сортування Шелла (Shell Sort)
-// Працює шляхом поступового зменшення відстані (gap) між елементами для сортування
 void shellSort(vector<int>& arr) {
-    int n = arr.size();  // Отримуємо розмір масиву
-    for (int gap = n / 2; gap > 0; gap /= 2) {  // Цикл зменшує відстань між елементами
-        for (int i = gap; i < n; i++) {  // Цикл перебирає всі елементи на певній відстані
-            int temp = arr[i];  // Зберігаємо поточний елемент
+    int n = arr.size();
+    for (int gap = n / 2; gap > 0; gap /= 2) {
+        for (int i = gap; i < n; i++) {
+            int temp = arr[i];
             int j;
-            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {  // Внутрішній цикл для порівняння і обміну
-                comparisons++;  // Кожне порівняння збільшує лічильник
-                arr[j] = arr[j - gap];  // Зсув елементів
-                exchanges++;  // Лічильник обмінів збільшується
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                comparisons++;
+                arr[j] = arr[j - gap];
+                exchanges++;
             }
-            arr[j] = temp;  // Вставляємо поточний елемент на правильне місце
+            arr[j] = temp;
         }
     }
 }
 
-// Функція для заповнення масиву найкращим випадком (вже відсортований масив)
+// Заповнення масиву
 void fillBestCase(vector<int>& arr) {
-    for (int i = 0; i < arr.size(); i++) {  // Заповнюємо масив елементами від 0 до n-1
+    for (int i = 0; i < arr.size(); i++) {
         arr[i] = i;
     }
 }
 
-// Функція для заповнення масиву найгіршим випадком (відсортований у зворотньому порядку)
 void fillWorstCase(vector<int>& arr) {
-    for (int i = 0; i < arr.size(); i++) {  // Заповнюємо масив елементами від n до 1
+    for (int i = 0; i < arr.size(); i++) {
         arr[i] = arr.size() - i;
     }
 }
 
-// Функція для заповнення масиву випадковими значеннями
-void fillRandomCase(vector<int>& arr) {
-    for (int i = 0; i < arr.size(); i++) {  // Заповнюємо масив випадковими числами від 0 до N
-        arr[i] = rand() % N;
+void fillRandomCase(vector<int>& arr, int maxValue) {
+    for (int i = 0; i < arr.size(); i++) {
+        arr[i] = rand() % maxValue;
     }
 }
 
-// Функція для виведення результатів (кількість порівнянь і обмінів)
-void printResults(const string& caseName, const string& methodName) {
-    cout << methodName << " - " << caseName << ": Comparisons = " << comparisons << ", Exchanges = " << exchanges << endl;
+// Функція для виведення таблиці з результатами
+void printTableHeader(const string& methodName, int n) {
+    cout << "===============================" << endl;
+    cout << "   " << methodName << " Results (N = " << n << ")" << endl;
+    cout << "===============================" << endl;
+    cout << "|   Case   | Comparisons | Exchanges |" << endl;
+    cout << "--------------------------------------" << endl;
 }
 
+void printTableRow(const string& caseName) {
+    cout << "| " << setw(8) << caseName << " | " 
+         << setw(11) << comparisons << " | " 
+         << setw(9) << exchanges << " |" << endl;
+}
+
+// Основна функція
 int main() {
-    srand(time(0));  // Ініціалізуємо генератор випадкових чисел
+    srand(time(0));
+    const int sizes[] = {1000, 10000, 100000};  // Розміри масивів для тестування
 
-    vector<int> arr(N);  // Оголошуємо масив розміром N
+    for (int n : sizes) {
+        vector<int> arr(n);
 
-    // Найкращий випадок для Bubble Sort
-    fillBestCase(arr);  // Заповнюємо масив у зростаючому порядку
-    resetCounters();  // Скидаємо лічильники
-    bubbleSort(arr);  // Сортуємо за допомогою бульбашки
-    printResults("Best Case", "Bubble Sort");  // Виводимо результати
+        // Таблиця для Bubble Sort
+        printTableHeader("Bubble Sort", n);
 
-    // Середній випадок для Bubble Sort
-    fillRandomCase(arr);  // Заповнюємо масив випадковими числами
-    resetCounters();  // Скидаємо лічильники
-    bubbleSort(arr);  // Сортуємо за допомогою бульбашки
-    printResults("Average Case", "Bubble Sort");  // Виводимо результати
+        fillBestCase(arr);
+        resetCounters();
+        bubbleSort(arr);
+        printTableRow("Best");
 
-    // Найгірший випадок для Bubble Sort
-    fillWorstCase(arr);  // Заповнюємо масив у спадному порядку
-    resetCounters();  // Скидаємо лічильники
-    bubbleSort(arr);  // Сортуємо за допомогою бульбашки
-    printResults("Worst Case", "Bubble Sort");  // Виводимо результати
+        fillRandomCase(arr, n);
+        resetCounters();
+        bubbleSort(arr);
+        printTableRow("Average");
 
-   
+        fillWorstCase(arr);
+        resetCounters();
+        bubbleSort(arr);
+        printTableRow("Worst");
+
+        cout << "--------------------------------------" << endl;
+
+        // Таблиця для QuickSort
+        printTableHeader("QuickSort", n);
+
+        fillBestCase(arr);
+        resetCounters();
+        quickSort(arr, 0, n - 1);
+        printTableRow("Best");
+
+        fillRandomCase(arr, n);
+        resetCounters();
+        quickSort(arr, 0, n - 1);
+        printTableRow("Average");
+
+        fillWorstCase(arr);
+        resetCounters();
+        quickSort(arr, 0, n - 1);
+        printTableRow("Worst");
+
+        cout << "--------------------------------------" << endl;
+
+        // Таблиця для Shell Sort
+        printTableHeader("Shell Sort", n);
+
+        fillBestCase(arr);
+        resetCounters();
+        shellSort(arr);
+        printTableRow("Best");
+
+        fillRandomCase(arr, n);
+        resetCounters();
+        shellSort(arr);
+        printTableRow("Average");
+
+        fillWorstCase(arr);
+        resetCounters();
+        shellSort(arr);
+        printTableRow("Worst");
+
+        cout << "--------------------------------------" << endl;
+    }
 
     return 0;
 }
+
+
+
+//теор - формула вивід(необов'язково))
+//експери - резульатат мій
+//найкращий - відсортовано
+//середній - довільно рандомно
+//найгірший - відсортовано у зворотньому порядку
+
+//-----------------------------------------------------------
